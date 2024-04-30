@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  labels:
+    app: jenkinsapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkinsapp
+  template:
+    metadata:
+      labels:
+        app: jenkinsapp 
+    spec:
+      containers:
+      - name: jenkinsserver
+        image: nash20/edc_ci_image:buildno
+        ports:
+        - containerPort: 8080
+        
+        
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkinsapp-service
+spec:
+  selector:
+    app: jenkinsapp 
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 8080
+    nodePort: 31108
